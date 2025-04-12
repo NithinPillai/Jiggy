@@ -1,0 +1,127 @@
+/* styles.css (DEBUG VERSION) */
+
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* TEMPORARY: solid background to confirm CSS loads */
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #333; /* Solid dark background for debugging */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #ff0; /* Yellow text, so we can see it on dark bg */
+  }
+  
+  /* Main Container */
+  .container {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    margin: auto;
+    border: 2px solid lime; /* Visible border to confirm container's size */
+  }
+  
+  /* App Title */
+  .app-title {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    border: 1px dashed red; /* Another debug marker */
+  }
+  
+  /* Mode Buttons Container */
+  .mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Individual Mode Button */
+  .mode-button {
+    background-color: red; /* BRIGHT red for debugging */
+    border: none;
+    border-radius: 0.75rem;
+    width: 160px;
+    height: 160px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .mode-button:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Icon inside the button */
+  .mode-button .icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.5rem;
+    stroke: black; /* So we can see it against the red background */
+  }
+  
+  /* Button text styling */
+  .mode-button span {
+    font-size: 1.1rem;
+    color: black; /* Visible against red button */
+  }
+  
+  /* Source Row */
+  .source-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Upload Button */
+  .upload-button {
+    background-color: #0099ff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .upload-button:hover {
+    background-color: #00bbff;
+  }
+  
+  /* Loading Row */
+  .loading-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Progress Bar */
+  .progress-bar {
+    width: 300px;
+    height: 8px;
+    background-color: yellow;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* Progress Fill */
+  .progress-fill {
+    width: 50%;
+    height: 100%;
+    background-color: black;
+    border-radius: 4px;
+  }
