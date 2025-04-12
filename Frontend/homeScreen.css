@@ -27,47 +27,77 @@ body {
 .card {
     background-color: #fff;
     border-radius: 12px;
-    width: 480px;
-    /* Adjust as you like */
-    padding: 2rem;
+    width: 1200px;
+    /* Keeps the same width */
+    min-height: 600px;
+    /* Increased overall height */
+    padding: 4rem;
+    /* More padding for a spacious feel */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
+
+    /* Flexbox centering for all content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Headline styling */
 .card h1 {
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
+    margin-bottom: 4rem;
+    /* More space after the heading */
+    font-size: 4rem;
+    /* Bigger headline */
 }
 
-/* Row for the icons (pencil & sword) */
+/* Container for both icons */
 .icons-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    /* space between the two icon boxes */
 }
 
-/* Icon images */
-.icon {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-    /* Ensures icon is scaled and not cropped */
+/* Each icon box: big rounded square, orange gradient, subtle shadow */
+.icon-box {
+    width: 200px;
+    /* adjust size as needed */
+    height: 200px;
+    border-radius: 25px;
+    /* adjust corner roundness */
+    background: linear-gradient(135deg, #e8a04b, #d58224);
+    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+/* Icon images themselves */
+.icon {
+    width: 50%;
+    height: auto;
+    object-fit: contain;
+    /* ensures icon scales properly without cropping */
+}
+
 
 /* Upload button styling */
 .upload-btn {
     background-color: #000;
     color: #fff;
     border: none;
-    padding: 0.75rem 1.5rem;
+    padding: 1.5rem 3rem;
+    /* Bigger button size */
     cursor: pointer;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1.5rem;
+    /* Larger text */
     transition: background-color 0.2s ease;
     margin-bottom: 2rem;
+    /* Increased space below the button */
 }
 
 .upload-btn:hover {
@@ -79,36 +109,32 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 2rem;
+    /* More gap between "Loading..." and the bar */
 }
 
 /* Progress bar container */
+/* Progress bar container */
+/* Progress bar container */
+/* Progress bar container */
 .progress-bar {
-    width: 200px;
-    height: 10px;
+    width: 500px;
+    height: 15px;
     background-color: #ccc;
-    border-radius: 5px;
+    border-radius: 7px;
     overflow: hidden;
     position: relative;
 }
 
-/* Progress fill (animated from 0 to 100% for demonstration) */
+/* Progress fill with transition for smooth animation */
 .progress-fill {
-    width: 20%;
-    /* Adjust to set initial fill */
+    width: 0%;
     height: 100%;
     background-color: #000;
-
-    /* Example animation that repeatedly fills and empties the bar */
-    animation: loadingAnimation 2s infinite alternate ease-in-out;
+    transition: width 2s ease-out;
 }
 
-@keyframes loadingAnimation {
-    0% {
-        width: 20%;
-    }
+/* Other styles remain unchanged */
 
-    100% {
-        width: 100%;
-    }
-}
+
+/* Other CSS rules remain unchanged... */

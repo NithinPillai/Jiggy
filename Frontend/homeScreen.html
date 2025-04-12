@@ -16,24 +16,98 @@
 
             <!-- Row for the icons -->
             <div class="icons-row">
-                <!-- Replace with your pencil icon path -->
-                <img src="pencil.png" alt="Pencil Icon" class="icon">
-                <!-- Replace with your sword icon path -->
-                <img src="sword.png" alt="Sword Icon" class="icon">
-            </div>
-
-            <!-- Upload Button -->
-            <button class="upload-btn">Upload Video</button>
-
-            <!-- Loading label and bar -->
-            <div class="loading-row">
-                <p>Loading...</p>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
+                <div class="icon-box">
+                    <img src="pencil.png" alt="Pencil Icon" class="icon">
+                </div>
+                <div class="icon-box">
+                    <img src="sword.png" alt="Sword Icon" class="icon">
                 </div>
             </div>
+
+
+            <!-- Upload Video Button -->
+            <button id="upload-btn" class="upload-btn">Upload Video</button>
+
+            <!-- Hidden file input -->
+            <input type="file" id="file-input" accept="video/*" style="display: none;" />
+
+            <!-- Loading area, initially hidden -->
+            <div class="loading-row" style="display: none;">
+                <p>Loading...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadBtn = document.getElementById('upload-btn');
+            const fileInput = document.getElementById('file-input');
+            const progressFill = document.querySelector('.progress-fill');
+            const loadingRow = document.querySelector('.loading-row');
+
+            // Trigger the hidden file input when the "Upload Video" button is clicked.
+            uploadBtn.addEventListener('click', function () {
+                fileInput.click();
+            });
+
+            // When the file is selected (file opened/uploaded), reveal the loading bar and begin upload.
+            fileInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // Show the loading bar when a file is selected.
+                    loadingRow.style.display = "flex";
+
+                    // Reset the progress bar to 0%
+                    progressFill.style.width = "0%";
+
+                    // Start uploading the file
+                    uploadVideo(file);
+                }
+            });
+
+            // Function to upload the file using XMLHttpRequest.
+            function uploadVideo(file) {
+                const formData = new FormData();
+                formData.append('video', file);  // 'video' is the key your server expects.
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'upload_endpoint_here', true); // Replace with your actual upload URL.
+
+                // Update progress as the file uploads.
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressFill.style.width = percentComplete + '%';
+                    }
+                };
+
+                // When the upload completes successfully.
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        progressFill.style.width = "100%";
+                        console.log('Upload successful!');
+                    } else {
+                        console.error('Upload failed.');
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('Error during the upload.');
+                };
+
+                xhr.send(formData);
+            }
+        });
+    </script>
+
+
+
+
 </body>
 
 </html>
