@@ -55,9 +55,10 @@ body {
 .icons-row {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     gap: 4rem;
     margin-bottom: 4rem;
+    width: 80%;
     /* space between the two icon boxes */
 }
 
@@ -66,13 +67,29 @@ body {
     width: 200px;
     /* adjust size as needed */
     height: 200px;
-    border-radius: 25px;
-    /* adjust corner roundness */
+    /* border-radius: 25px;
     background: linear-gradient(135deg, #e8a04b, #d58224);
-    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25);
+    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25); */
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 50px;
+    background: #FFFFFF;
+    box-shadow: 20px 20px 60px #d9d9d9,
+        -20px -20px 60px #ffffff;
+}
+
+.icon-box {
+    transition: all 0.5s ease;
+}
+
+.icon-box:hover {
+    background-color: #f0f0f0;
+    width: 220px;
+    height: 220px;
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 /* Icon images themselves */
@@ -96,7 +113,7 @@ body {
     font-size: 1.5rem;
     /* Larger text */
     transition: background-color 0.2s ease;
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
     /* Increased space below the button */
 }
 
@@ -104,19 +121,21 @@ body {
     background-color: #444;
 }
 
-/* Loading row for label + bar */
 .loading-row {
+    /* Use flex layout with vertical stacking */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
-    /* More gap between "Loading..." and the bar */
+    /* Center horizontally */
+    gap: 0.5rem;
+    /* Space between the bar and filename */
+
+    /* Optional additional spacing so it isn't squashed against other elements */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
-/* Progress bar container */
-/* Progress bar container */
-/* Progress bar container */
-/* Progress bar container */
+/* Example progress bar styling */
 .progress-bar {
     width: 500px;
     height: 15px;
@@ -124,15 +143,24 @@ body {
     border-radius: 7px;
     overflow: hidden;
     position: relative;
+    margin-bottom: 1rem;
 }
 
-/* Progress fill with transition for smooth animation */
+/* Progress fill with a smooth transition */
 .progress-fill {
     width: 0%;
     height: 100%;
     background-color: #000;
     transition: width 2s ease-out;
 }
+
+/* File name styling */
+#file-name {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
 
 /* Other styles remain unchanged */
 
