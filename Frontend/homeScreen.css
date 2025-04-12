@@ -1,72 +1,114 @@
-/* styles.css */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f3e5;
-    color: #333;
+/* Reset and box-sizing */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    box-sizing: border-box;
 }
 
+/* Body background and default font */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-family: sans-serif;
+    background-color: #f8f4ea;
+    /* Cream background */
+}
+
+/* Center the card both vertically and horizontally */
 .container {
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
-    padding: 20px;
-    border-radius: 15px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.icon-container {
     display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-.icon img {
-    width: 80px;
-    height: 80px;
-    border-radius: 10px;
+/* The white card with rounded corners and subtle shadow */
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    width: 480px;
+    /* Adjust as you like */
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
+/* Headline styling */
+.card h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+/* Row for the icons (pencil & sword) */
+.icons-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Icon images */
+.icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    /* Ensures icon is scaled and not cropped */
+}
+
+/* Upload button styling */
 .upload-btn {
-    padding: 10px 20px;
-    background-color: #333;
+    background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
+    border-radius: 4px;
     font-size: 1rem;
-    margin-top: 20px;
+    transition: background-color 0.2s ease;
+    margin-bottom: 2rem;
 }
 
 .upload-btn:hover {
-    background-color: #555;
+    background-color: #444;
 }
 
-.loading-section {
-    margin-top: 30px;
+/* Loading row for label + bar */
+.loading-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.loading-bar {
-    width: 0%;
-    height: 6px;
-    background-color: #4CAF50;
-    border-radius: 3px;
-    transition: width 2s;
+/* Progress bar container */
+.progress-bar {
+    width: 200px;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
 }
 
-p {
-    font-size: 1rem;
-    color: #333;
+/* Progress fill (animated from 0 to 100% for demonstration) */
+.progress-fill {
+    width: 20%;
+    /* Adjust to set initial fill */
+    height: 100%;
+    background-color: #000;
+
+    /* Example animation that repeatedly fills and empties the bar */
+    animation: loadingAnimation 2s infinite alternate ease-in-out;
+}
+
+@keyframes loadingAnimation {
+    0% {
+        width: 20%;
+    }
+
+    100% {
+        width: 100%;
+    }
 }
