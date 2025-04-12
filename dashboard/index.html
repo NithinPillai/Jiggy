@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jiggy</title>
+    <!-- Custom CSS if needed -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-gradient-to-b from-blue-200 to-blue-500 text-white min-h-screen flex flex-col items-center justify-center">
+    
+    <!-- App Title -->
+    <h1 class="text-5xl font-light mb-12">Jiggy</h1>
+    
+    <!-- Mode Buttons -->
+    <div class="flex gap-8 mb-12">
+      <!-- Practice Button with Inline Pencil SVG -->
+      <button class="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          fill="none"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-12 h-12 mb-2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M2 22l4-1 12-12-3-3L3 18l-1 4z"/>
+          <path d="M14 4l6 6"/>
+        </svg>
+        <span class="text-lg">Practice</span>
+      </button>
+
+      <!-- Challenge Button with Inline Sword SVG -->
+      <button class="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          fill="none"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-12 h-12 mb-2"
+          viewBox="0 0 24 24"
+        >
+          <line x1="12" y1="2" x2="12" y2="14" />
+          <line x1="8" y1="12" x2="16" y2="12" />
+          <line x1="12" y1="14" x2="10" y2="22" />
+          <line x1="12" y1="14" x2="14" y2="22" />
+          <circle cx="12" cy="22" r="1" />
+        </svg>
+        <span class="text-lg">Challenge</span>
+      </button>
+    </div>
+
+    <!-- Source & Upload Section -->
+    <div class="flex flex-col gap-6 w-full max-w-xl px-6">
+      <div class="flex justify-between items-center">
+        <label class="text-lg">Source:</label>
+        <button class="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-md hover:bg-white/20 transition-colors">
+          Upload file
+        </button>
+      </div>
+
+      <!-- Loading Bar -->
+      <div>
+        <label class="text-lg block mb-2">Loading</label>
+        <div class="w-full bg-white/20 rounded-full h-2">
+          <div class="bg-white h-2 rounded-full w-1/2"></div>
+        </div>
+      </div><!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Jiggy</title>
+          <!-- Tailwind CSS via CDN -->
+          <link
+            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+            rel="stylesheet"
+          />
+        </head>
+        <body class="bg-gradient-to-b from-blue-200 to-blue-500 text-white min-h-screen flex items-center justify-center">
+          <div id="root"></div>
+      
+          <!-- React, ReactDOM, and Framer Motion via CDN using ES Modules -->
+          <script type="module">
+            import React, { useState } from "https://cdn.skypack.dev/react";
+            import { createRoot } from "https://cdn.skypack.dev/react-dom/client";
+            import { motion, AnimatePresence } from "https://cdn.skypack.dev/framer-motion";
+      
+            function App() {
+              const [selectedMode, setSelectedMode] = useState(null);
+      
+              // Animation variants for both views.
+              const variants = {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 },
+                exit: { opacity: 0, scale: 1.2 }
+              };
+      
+              const transition = { type: "tween", duration: 0.5 };
+      
+              return (
+                <AnimatePresence mode="wait">
+                  {selectedMode === null && (
+                    <motion.div
+                      key="landing"
+                      variants={variants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={transition}
+                      className="text-center"
+                    >
+                      <h1 className="text-5xl font-light mb-12">Jiggy</h1>
+                      <div className="flex justify-center gap-8 mb-12">
+                        {/* Practice Button */}
+                        <button
+                          onClick={() => setSelectedMode("Practice")}
+                          className="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform"
+                        >
+                          {/* Inline Pencil Icon */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="48"
+                            height="48"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-12 h-12 mb-2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M2 22l4-1 12-12-3-3L3 18l-1 4z" />
+                            <path d="M14 4l6 6" />
+                          </svg>
+                          <span className="text-lg">Practice</span>
+                        </button>
+      
+                        {/* Challenge Button */}
+                        <button
+                          onClick={() => setSelectedMode("Challenge")}
+                          className="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform"
+                        >
+                          {/* Inline Sword Icon */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="48"
+                            height="48"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-12 h-12 mb-2"
+                            viewBox="0 0 24 24"
+                          >
+                            <line x1="12" y1="2" x2="12" y2="14" />
+                            <line x1="8" y1="12" x2="16" y2="12" />
+                            <line x1="12" y1="14" x2="10" y2="22" />
+                            <line x1="12" y1="14" x2="14" y2="22" />
+                            <circle cx="12" cy="22" r="1" />
+                          </svg>
+                          <span className="text-lg">Challenge</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+      
+                  {selectedMode !== null && (
+                    <motion.div
+                      key="detail"
+                      variants={variants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={transition}
+                      className="text-center px-4"
+                    >
+                      <h2 className="text-4xl font-light mb-6">{selectedMode} Mode</h2>
+                      <p className="max-w-md mx-auto mb-8">
+                        {selectedMode === "Practice"
+                          ? "Practice mode helps you groove at your own pace. Experiment with moves and learn the steps in a relaxed environment."
+                          : "Challenge mode is where the heat is on. Test your dance skills with timed challenges and climb the leaderboard."}
+                      </p>
+                      <button
+                        onClick={() => setSelectedMode(null)}
+                        className="mt-4 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-md hover:bg-white/20 transition-colors"
+                      >
+                        Go Back
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              );
+            }
+      
+            const container = document.getElementById("root");
+            const root = createRoot(container);
+            root.render(<App />);
+          </script>
+        </body>
+      </html>
+    </div>
+
+  </body>
+</html>
