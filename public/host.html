@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Host - Remote Video Feed</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    video { width: 640px; height: 480px; border: 1px solid #ccc; margin-top: 20px; }
+    #invite { margin-top: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Host - Incoming Video Feed</h1>
+  <video id="remoteVideo" autoplay playsinline></video>
+  <div id="invite">
+    <p>Send this link to your friend:</p>
+    <p id="inviteLink"></p>
+  </div>
+
+  <script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    // Identify as host
+    socket.emit('role', 'host');
+
+    // Create a new RTCPeerConnection using Google’s public STUN server.
+    const peerConnection = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+    
+    // When a remote track is received, show it in the video element.
+    peerConnection.ontrack = event => {
+      document.getElementById('remoteVideo').srcObject = event.streams[0];
+    };
+
+    // Send any ICE candidates to the client.
+    peerConnection.onicecandidate = event => {
+      if (event.candidate) {
+        socket.emit('candidate', event.candidate);
+      }
+    };
+
+    // When we receive an offer from the client, set it as the remote description,
+    // then create and send an answer.
+    socket.on('offer', async offer => {
+      console.log('Received offer:', offer);
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+      socket.emit('answer', answer);
+    });
+
+    // When we receive ICE candidates from the client, add them.
+    socket.on('candidate', candidate => {
+      peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    });
+
+    // Generate the invite link to send to your friend.
+    const inviteLinkElem = document.getElementById('inviteLink');
+    // This builds a URL assuming client.html is served from the same host and port.
+    const currentUrl = window.location.href;
+    // Replace "host.html" with "client.html"
+    const inviteLink = currentUrl.replace("host.html", "client.html");
+    inviteLinkElem.textContent = inviteLink;
+  </script>
+</body>
+</html>

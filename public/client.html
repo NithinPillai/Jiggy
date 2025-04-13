@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client - Send Your Video Feed</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    video { width: 640px; height: 480px; border: 1px solid #ccc; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Client - Your Video Feed</h1>
+  <video id="localVideo" autoplay playsinline muted></video>
+  
+  <script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    // Identify as client
+    socket.emit('role', 'client');
+
+    // Grab the video element
+    const localVideo = document.getElementById('localVideo');
+
+    async function startVideo() {
+      try {
+        // Prompt for camera access and get the stream
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        localVideo.srcObject = stream;
+        
+        // Set up RTCPeerConnection on the client side.
+        const peerConnection = new RTCPeerConnection({
+          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        });
+        
+        // Add the video tracks to the connection.
+        stream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, stream);
+        });
+        
+        // When ICE candidates are generated, send them to the host.
+        peerConnection.onicecandidate = event => {
+          if (event.candidate) {
+            socket.emit('candidate', event.candidate);
+          }
+        };
+
+        // Create an offer, set it as local description, and send it.
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        socket.emit('offer', offer);
+
+        // When the client receives the answer from the host, set it.
+        socket.on('answer', async answer => {
+          await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        });
+      
+        // When ICE candidates are received from the host, add them.
+        socket.on('candidate', candidate => {
+          peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        });
+
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+      }
+    }
+    
+    startVideo();
+  </script>
+</body>
+</html>
