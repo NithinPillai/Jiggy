@@ -2,20 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Client - Send Your Video Feed</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
-    video { width: 640px; height: 480px; border: 1px solid #ccc; margin-top: 20px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="host.css"/>
+  <title>Jiggy Dance Challenge - Host</title>
 </head>
 <body>
-  <h1>Client - Your Video Feed</h1>
-  <video id="localVideo" autoplay playsinline muted></video>
-  <video id="remoteVideo" autoplay playsinline></video>
+  <!-- Header -->
+  <header>
+    <a href="homePage.html" class="logo"><img src="logo.svg" alt="Jiggy Logo"/></a>
+      
+    </a>
+    <nav>
+      <!-- nav links here -->
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 id="header">Challenge <span>Video Feed</span></h1>
+    
+    <div class="video-container">
+      <div class="video-wrapper" id="yourCamera">
+        <p class="video-label">Your Camera</p>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+
+      <div class="video-wrapper" id="sourceVid">
+        <p class="video-label">Source</p>
+        <video id="sourceVideo" autoplay playsinline>
+            <source src="brown_girl_icy_hot_dance.mov" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+      
+      <div class="video-wrapper" id="friendCamera">
+        <p class="video-label">Friend's Camera</p>
+        <video id="remoteVideo" autoplay playsinline></video>
+      </div>
+    </div>
+    
+
+  </div>
   
-  <script src="https://80bc-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
+  <script src="https://3260-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io("https://80bc-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app");
+    const socket = io("https://3260-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app");
     // Identify as client
     socket.emit('role', 'client');
 

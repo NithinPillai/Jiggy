@@ -142,48 +142,7 @@ video {
     object-fit: cover; /* Ensures the video covers the entire area */
 }
 
-/* INVITE SECTION */
-#invite {
-    background-color: white;
-    padding: 2rem 3rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
-    margin-top: 7rem;
-    width: auto;
-    justify-self: center;
-    display: flex;
-    align-items: center;
-    gap: 1rem; /* Add gap between invite link and button */
-}
-
-#invite p {
-    font-size: 1.6rem;
-    color: #333;
-    margin-bottom: 1rem;
-}
-
-#inviteLink {
-    font-size: 1.4rem;
-    color: #927FEE;
-    font-weight: 500;
-    word-break: break-all;
-    padding: 1rem;
-    background-color: #f5f5f5;
-    border-radius: 0.8rem;
-    border: 0.1rem solid #e0e0e0;
-}
-
-.copy-icon {
-    width: 3rem; /* Adjust size as needed */
-    height: 3rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.copy-icon:hover {
-    transform: scale(1.1);
-}
-
+/* BUTTONS */
 .btn {
     display: inline-block;
     padding: 1rem 2.8rem;
@@ -196,7 +155,7 @@ video {
     border: 0.2rem solid #927FEE;
     transition: 0.3s ease;
     cursor: pointer;
-    margin-top: -1rem;
+    margin-top: 2rem;
 }
 
 .btn:hover {
@@ -236,9 +195,6 @@ video {
         gap: 2rem;
     }
     
-    #invite {
-        padding: 1.5rem 2rem;
-    }
 }
 
 @media(max-width: 480px) {
@@ -254,7 +210,5 @@ video {
         font-size: 1.6rem;
     }
     
-    #invite {
-        padding: 1.5rem;
-    }
+
 }

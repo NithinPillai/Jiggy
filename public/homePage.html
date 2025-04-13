@@ -1,203 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="homePage.css"/>
-    <title>Jiggy Dance Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="homePage.css"/>
+  <title>Jiggy Dance Project</title>
+  <style>
+    .modal-error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo">
+      <img src="logo.svg" alt="Jiggy Logo"/>
+    </a>
+    <nav>
+      <!-- nav links here -->
+    </nav>
+  </header>
 
-    <!-- Header -->
-    <header>
-        <a href="#" class="logo">
-            <img src="logo.svg" alt="Jiggy Logo"/>
-        </a>
-        <nav>
-            <!-- nav links here -->
-        </nav>
-    </header>
+  <!-- Main Section -->
+  <section class="home">
+    <div class="home-content">
+      <h2 class="typing-text">
+        <span id="typed-text"></span><span class="cursor">|</span>
+      </h2>
+      <p class="subheading">START BY <span>UPLOADING YOUR VIDEO</span></p>
 
-    <!-- Main Section -->
-    <section class="home">
-        <div class="home-content">
-          <h2 class="typing-text">
-            <span id="typed-text"></span><span class="cursor">|</span>
-        </h2>
-        <p class="subheading">START BY <span>UPLOADING YOUR VIDEO</span></p>
-
-            <!-- Buttons Section -->
-            <div class="action-section">
-              <div class="btn-icons">
-                <a href="#" id="practice-btn"><img src="pencil.png" alt="Pencil Icon"></a>
-                <a href="#" id="challenge-btn"><img src="sword.png" alt="Sword Icon"></a>
-            </div>
-                <a href="#" class="btn">Upload Video File</a>
-                <input type="file" id="video-upload" accept="video/*" style="display: none;" />
-
-<!-- Progress Bar -->
-<div id="progress-container" class="progress-container" style="display: none;">
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
-  </div>
-  <p id="file-name" class="file-name"></p>
-</div>
-            </div>
+      <!-- Buttons Section -->
+      <div class="action-section">
+        <div class="btn-icons">
+          <a href="#" id="practice-btn"><img src="pencil.png" alt="Pencil Icon"></a>
+          <a href="#" id="challenge-btn"><img src="sword.png" alt="Sword Icon"></a>
         </div>
-    </section>
+        <a href="#" class="btn" id="uploadBtn">Upload Video File</a>
+        <input type="file" id="video-upload" accept="video/*" style="display: none;" />
 
-    <!-- Typing Script -->
-    <script>
-        const textArray = [
-            "Learn to Dance",
-            "Dance With Friends",
-            "Show Off Your Skills"
-        ];
-        const typingSpeed = 100;
-        const erasingSpeed = 60;
-        const delayBetweenWords = 2000;
+        <!-- Progress Bar -->
+        <div id="progress-container" class="progress-container" style="display: none;">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+          </div>
+          <p id="file-name" class="file-name"></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        let textIndex = 0;
-        let charIndex = 0;
+  <!-- Typing Script -->
+  <script>
+    const textArray = [
+      "Learn to Dance",
+      "Dance With Friends",
+      "Show Off Your Skills"
+    ];
+    const typingSpeed = 100,
+          erasingSpeed = 60,
+          delayBetweenWords = 2000;
+    let textIndex = 0, charIndex = 0;
+    const typedTextSpan = document.getElementById("typed-text");
 
-        const typedTextSpan = document.getElementById("typed-text");
+    function type() {
+      if (charIndex < textArray[textIndex].length) {
+        typedTextSpan.textContent += textArray[textIndex].charAt(charIndex);
+        charIndex++;
+        setTimeout(type, typingSpeed);
+      } else {
+        setTimeout(erase, delayBetweenWords);
+      }
+    }
 
-        function type() {
-            if (charIndex < textArray[textIndex].length) {
-                typedTextSpan.textContent += textArray[textIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(type, typingSpeed);
-            } else {
-                setTimeout(erase, delayBetweenWords);
-            }
-        }
+    function erase() {
+      if (charIndex > 0) {
+        typedTextSpan.textContent = textArray[textIndex].substring(0, charIndex - 1);
+        charIndex--;
+        setTimeout(erase, erasingSpeed);
+      } else {
+        textIndex++;
+        if (textIndex >= textArray.length) textIndex = 0;
+        setTimeout(type, typingSpeed + 300);
+      }
+    }
 
-        function erase() {
-            if (charIndex > 0) {
-                typedTextSpan.textContent = textArray[textIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(erase, erasingSpeed);
-            } else {
-                textIndex++;
-                if (textIndex >= textArray.length) textIndex = 0;
-                setTimeout(type, typingSpeed + 300);
-            }
-        }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (textArray.length) setTimeout(type, 500);
+    });
+  </script>
 
-        document.addEventListener("DOMContentLoaded", () => {
-            if (textArray.length) setTimeout(type, 500);
-        });
-    </script>
-
-<!-- Modal Container -->
-
-<div id="hover-modal-wrapper">
-  <div id="hover-modal-blur" class="hover-modal-blur"></div>
-  <div id="hover-modal" class="hover-modal">
-    <div class="hover-modal-content">
-      <h2 id="modal-title">Modal Title</h2>
-      <p id="modal-description">Modal description text goes here.</p>
-      <div class="modal-buttons">
-        <a href="#" class="btn" id="practice-continue" style="display: inline-block;">
-          Continue to Practice
-        </a>
-        <a href="#" class="btn" id="challenge-continue" style="display: none;">
-          Continue to Challenge
-        </a>
+  <!-- Modal Container -->
+  <div id="hover-modal-wrapper">
+    <div id="hover-modal-blur" class="hover-modal-blur"></div>
+    <div id="hover-modal" class="hover-modal">
+      <div class="hover-modal-content">
+        <h2 id="modal-title">Modal Title</h2>
+        <p id="modal-description">Modal description text goes here.</p>
+        <div class="modal-buttons">
+          <a href="#" class="btn" id="practice-continue" style="display: inline-block;">
+            Continue to Practice
+          </a>
+          <a href="#" class="btn" id="challenge-continue" style="display: none;">
+            Continue to Challenge
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- JAVASCRIPT -->
+  <!-- Modal & Other JS -->
+  <script>
+    const modalWrapper = document.getElementById("hover-modal-wrapper"),
+          modalTitle = document.getElementById("modal-title"),
+          modalDescription = document.getElementById("modal-description"),
+          practiceContinue = document.getElementById("practice-continue"),
+          challengeContinue = document.getElementById("challenge-continue");
+    let hideTimer;
 
-<script>
-  const modalWrapper = document.getElementById("hover-modal-wrapper");
-  const modalTitle = document.getElementById("modal-title");
-  const modalDescription = document.getElementById("modal-description");
-  const practiceContinue = document.getElementById("practice-continue");
-  const challengeContinue = document.getElementById("challenge-continue");
-
-  let hideTimer;
-
-  function showModal(title, description, mode) {
-    clearTimeout(hideTimer);
-
-    modalTitle.textContent = title;
-    modalDescription.textContent = description;
-
-    practiceContinue.style.display = mode === "practice" ? "inline-block" : "none";
-    challengeContinue.style.display = mode === "challenge" ? "inline-block" : "none";
-
-    modalWrapper.classList.add("show");
-  }
-
-  function scheduleHideModal() {
-    hideTimer = setTimeout(() => {
-      modalWrapper.classList.remove("show");
-    }, 200); // short delay prevents flicker
-  }
-
-  const practiceBtn = document.getElementById("practice-btn");
-  const challengeBtn = document.getElementById("challenge-btn");
-
-  practiceBtn.addEventListener("mouseover", () => {
-    showModal("Practice Mode", "Practice your moves and upload later!", "practice");
-  });
-
-  challengeBtn.addEventListener("mouseover", () => {
-    showModal("Challenge Mode", "Go head-to-head with your friends!", "challenge");
-  });
-
-  practiceBtn.addEventListener("mouseout", scheduleHideModal);
-  challengeBtn.addEventListener("mouseout", scheduleHideModal);
-
-  // Prevent flicker: keep modal open if user moves over it
-  modalWrapper.addEventListener("mouseover", () => clearTimeout(hideTimer));
-  modalWrapper.addEventListener("mouseout", scheduleHideModal);
-  // Add event listener for the "Continue to Challenge" button
-  challengeContinue.addEventListener('click', (e) => {
-      e.preventDefault(); // Prevent default anchor behavior
-      window.location.href = ' https://80bc-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/host.html'; // Navigate to host.html
-  });
-
-</script>
-
-<script>
-  const uploadBtn = document.querySelector('.btn');
-  const fileInput = document.getElementById('video-upload');
-  const progressContainer = document.getElementById('progress-container');
-  const progressFill = document.getElementById('progress-fill');
-  const fileNameText = document.getElementById('file-name');
-
-  // Click the file input when user clicks the visible upload button
-  uploadBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    fileInput.click();
-  });
-
-  fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    fileNameText.textContent = `Uploading: ${file.name}`;
-    progressContainer.style.display = 'flex';
-    progressFill.style.width = '0%';
-
-    // Simulated upload progress
-    let progress = 0;
-    const fakeUpload = setInterval(() => {
-      progress += Math.random() * 10; // Simulate random progress
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(fakeUpload);
-        fileNameText.textContent = `Uploaded: ${file.name}`;
-        fileNameText.style.color = "green";
+    function showModal(title, description, mode) {
+      clearTimeout(hideTimer);
+      modalTitle.textContent = title;
+      modalDescription.textContent = description;
+      modalDescription.classList.remove("modal-error");
+      
+      if (mode === "practice") {
+        practiceContinue.style.display = "inline-block";
+        challengeContinue.style.display = "none";
+      } else if (mode === "challenge") {
+        challengeContinue.style.display = "inline-block";
+        practiceContinue.style.display = "none";
+      } else if (mode === "challenge-error") {
+        challengeContinue.style.display = "none";
+        practiceContinue.style.display = "none";
+        modalDescription.classList.add("modal-error");
       }
-      progressFill.style.width = `${progress}%`;
-    }, 200);
-  });
-</script>
+      modalWrapper.classList.add("show");
+    }
 
+    function scheduleHideModal() {
+      hideTimer = setTimeout(() => {
+        modalWrapper.classList.remove("show");
+      }, 200);
+    }
+
+    const practiceBtn = document.getElementById("practice-btn"),
+          challengeBtn = document.getElementById("challenge-btn");
+
+    practiceBtn.addEventListener("mouseover", () => {
+      showModal("Practice Mode", "Practice your moves and upload later!", "practice");
+    });
+
+    challengeBtn.addEventListener("mouseover", () => {
+      // Check if an uploaded video exists
+      const videoUrl = sessionStorage.getItem("uploadedVideoUrl");
+      if (videoUrl) {
+        showModal("Challenge Mode", "Go head-to-head with your friends!", "challenge");
+      } else {
+        showModal("Challenge Mode", "Please upload a video", "challenge-error");
+      }
+    });
+
+    practiceBtn.addEventListener("mouseout", scheduleHideModal);
+    challengeBtn.addEventListener("mouseout", scheduleHideModal);
+    modalWrapper.addEventListener("mouseover", () => clearTimeout(hideTimer));
+    modalWrapper.addEventListener("mouseout", scheduleHideModal);
+
+    // Only allow Continue to Challenge if a video is uploaded
+    challengeContinue.addEventListener('click', (e) => {
+      e.preventDefault();
+      const videoUrl = sessionStorage.getItem("uploadedVideoUrl");
+      if (!videoUrl) {
+        alert("Please upload a video before continuing");
+      } else {
+        window.location.href = 'host.html';
+      }
+    });
+  </script>
+
+  <!-- File Upload Script Using FileReader -->
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn'),
+          fileInput = document.getElementById('video-upload'),
+          progressContainer = document.getElementById('progress-container'),
+          progressFill = document.getElementById('progress-fill'),
+          fileNameText = document.getElementById('file-name');
+
+    // Trigger file input when the Upload button is clicked
+    uploadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      fileNameText.textContent = `Uploading: ${file.name}`;
+      progressContainer.style.display = 'flex';
+      progressFill.style.width = '0%';
+
+      // Convert file to a Data URL using FileReader
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataURL = e.target.result;
+        // Save the data URL in sessionStorage so it can be used in host.html
+        sessionStorage.setItem("uploadedVideoUrl", dataURL);
+      };
+      reader.readAsDataURL(file);
+      
+      // Simulated upload progress (optional UI feedback)
+      let progress = 0;
+      const fakeUpload = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(fakeUpload);
+          fileNameText.textContent = `Uploaded: ${file.name}`;
+          fileNameText.style.color = "green";
+        }
+        progressFill.style.width = `${progress}%`;
+      }, 200);
+    });
+  </script>
 </body>
 </html>

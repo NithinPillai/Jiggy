@@ -29,9 +29,9 @@
 
       <div class="video-wrapper" id="sourceVid">
         <p class="video-label">Source</p>
-        <video id="sourceVideo" autoplay playsinline>
-            <source src="brown_girl_icy_hot_dance.mov" type="video/mp4">
-            Your browser does not support the video tag.
+        <video id="sourceVideo" autoplay playsinline controls>
+          <source id="videoSource" src="" type="video/mp4">
+          Your browser does not support the video tag.
         </video>
     </div>
       
@@ -43,12 +43,28 @@
     
     <div id="invite">
       <p>Invite link: <span id="inviteLink"></span></p>
+      <img src="copy.png" id="copyButton" class="copy-icon" alt="Copy Icon" /> <!-- Image used for copy button -->
     </div>
   </div>
-
-  <script src="https://80bc-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://80bc-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app');
+    document.addEventListener("DOMContentLoaded", () => {
+      // Retrieve the uploaded video data URL from sessionStorage
+      const videoUrl = sessionStorage.getItem("uploadedVideoUrl");
+      const videoSource = document.getElementById("videoSource");
+      const videoElement = document.getElementById("sourceVideo");
+      if (videoUrl) {
+        // Set the uploaded video as the source and load it
+        videoSource.src = videoUrl;
+        videoElement.load();
+      } else {
+        // Hide the Source video container if no video was uploaded
+        document.getElementById("sourceVid").style.display = "none";
+      }
+    });
+  </script>
+  <script src=" https://3260-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('https://3260-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app');
 
     // Identify as host
     socket.emit('role', 'host');
@@ -113,6 +129,15 @@
     }
   
     startLocalVideo();
+  
+    // Add copy functionality
+    const copyButton = document.getElementById('copyButton');
+    copyButton.addEventListener('click', () => {
+      navigator.clipboard.writeText(inviteLink).then(() => {
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    });
   </script>
 </body>
 </html>
