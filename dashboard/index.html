@@ -1,85 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Jiggy</title>
-    <!-- Tailwind CSS via CDN -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS if needed -->
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body class="bg-gradient-to-b from-blue-200 to-blue-500 text-white min-h-screen flex flex-col items-center justify-center">
-    
-    <!-- App Title -->
-    <h1 class="text-5xl font-light mb-12">Jiggy</h1>
-    
-    <!-- Mode Buttons -->
-    <div class="flex gap-8 mb-12">
-      <!-- Practice Button with Inline Pencil SVG -->
-      <button class="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="48"
-          height="48"
-          fill="none"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-12 h-12 mb-2"
-          viewBox="0 0 24 24"
-        >
-          <path d="M2 22l4-1 12-12-3-3L3 18l-1 4z"/>
-          <path d="M14 4l6 6"/>
-        </svg>
-        <span class="text-lg">Practice</span>
-      </button>
+    <link rel="stylesheet" href="style.css"/>
+    <title>Jiggy Dance Project</title>
+</head>
+<body>
 
-      <!-- Challenge Button with Inline Sword SVG -->
-      <button class="w-40 h-40 bg-white/10 rounded-2xl shadow-lg flex flex-col items-center justify-center backdrop-blur-md hover:scale-105 transition-transform">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="48"
-          height="48"
-          fill="none"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-12 h-12 mb-2"
-          viewBox="0 0 24 24"
-        >
-          <line x1="12" y1="2" x2="12" y2="14" />
-          <line x1="8" y1="12" x2="16" y2="12" />
-          <line x1="12" y1="14" x2="10" y2="22" />
-          <line x1="12" y1="14" x2="14" y2="22" />
-          <circle cx="12" cy="22" r="1" />
-        </svg>
-        <span class="text-lg">Challenge</span>
-      </button>
-    </div>
+    <!-- Header -->
+    <header>
+        <a href="#" class="logo">
+            <img src="images/logo.png" alt="Jiggy Logo"/>
+        </a>
+        <nav>
+            <!-- nav links here -->
+        </nav>
+    </header>
 
-    <!-- Source & Upload Section -->
-    <div class="flex flex-col gap-6 w-full max-w-xl px-6">
-      <div class="flex justify-between items-center">
-        <label class="text-lg">Source</label>
-        <button class="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-md hover:bg-white/20 transition-colors">
-          Upload file
-        </button>
-      </div>
+    <!-- Main Section -->
+    <section class="home">
+        <div class="home-content">
+          <h2 class="typing-text">
+            <span id="typed-text"></span><span class="cursor">|</span>
+        </h2>
+        <p class="subheading">START BY <span>UPLOADING YOUR VIDEO</span></p>
 
-      <!-- Loading Bar -->
-      <div>
-        <label class="text-lg block mb-2">Loading</label>
-        <div class="w-full bg-white/20 rounded-full h-2">
-          <div class="bg-white h-2 rounded-full w-1/2"></div>
+            <!-- Buttons Section -->
+            <div class="action-section">
+              <div class="btn-icons">
+                <a href="#" id="practice-btn"><img src="images/pencil.png" alt="Pencil Icon"></a>
+                <a href="#" id="challenge-btn"><img src="images/sword.png" alt="Sword Icon"></a>
+            </div>
+                <a href="#" class="btn">Upload Video File</a>
+                <input type="file" id="video-upload" accept="video/*" style="display: none;" />
+
+<!-- Progress Bar -->
+<div id="progress-container" class="progress-container" style="display: none;">
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+  </div>
+  <p id="file-name" class="file-name"></p>
+</div>
+            </div>
         </div>
+    </section>
+
+    <!-- Typing Script -->
+    <script>
+        const textArray = [
+            "Learn to Dance",
+            "Dance With Friends",
+            "Show Off Your Skills"
+        ];
+        const typingSpeed = 100;
+        const erasingSpeed = 60;
+        const delayBetweenWords = 2000;
+
+        let textIndex = 0;
+        let charIndex = 0;
+
+        const typedTextSpan = document.getElementById("typed-text");
+
+        function type() {
+            if (charIndex < textArray[textIndex].length) {
+                typedTextSpan.textContent += textArray[textIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, typingSpeed);
+            } else {
+                setTimeout(erase, delayBetweenWords);
+            }
+        }
+
+        function erase() {
+            if (charIndex > 0) {
+                typedTextSpan.textContent = textArray[textIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(erase, erasingSpeed);
+            } else {
+                textIndex++;
+                if (textIndex >= textArray.length) textIndex = 0;
+                setTimeout(type, typingSpeed + 300);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (textArray.length) setTimeout(type, 500);
+        });
+    </script>
+
+<!-- Modal Container -->
+
+<div id="hover-modal-wrapper">
+  <div id="hover-modal-blur" class="hover-modal-blur"></div>
+  <div id="hover-modal" class="hover-modal">
+    <div class="hover-modal-content">
+      <h2 id="modal-title">Modal Title</h2>
+      <p id="modal-description">Modal description text goes here.</p>
+      <div class="modal-buttons">
+        <a href="#" class="btn" id="practice-continue" style="display: inline-block;">
+          Continue to Practice
+        </a>
+        <a href="#" class="btn" id="challenge-continue" style="display: none;">
+          Continue to Challenge
+        </a>
       </div>
     </div>
+  </div>
+</div>
 
-  </body>
+<!-- JAVASCRIPT -->
+
+<script>
+  const modalWrapper = document.getElementById("hover-modal-wrapper");
+  const modalTitle = document.getElementById("modal-title");
+  const modalDescription = document.getElementById("modal-description");
+  const practiceContinue = document.getElementById("practice-continue");
+  const challengeContinue = document.getElementById("challenge-continue");
+
+  let hideTimer;
+
+  function showModal(title, description, mode) {
+    clearTimeout(hideTimer);
+
+    modalTitle.textContent = title;
+    modalDescription.textContent = description;
+
+    practiceContinue.style.display = mode === "practice" ? "inline-block" : "none";
+    challengeContinue.style.display = mode === "challenge" ? "inline-block" : "none";
+
+    modalWrapper.classList.add("show");
+  }
+
+  function scheduleHideModal() {
+    hideTimer = setTimeout(() => {
+      modalWrapper.classList.remove("show");
+    }, 200); // short delay prevents flicker
+  }
+
+  const practiceBtn = document.getElementById("practice-btn");
+  const challengeBtn = document.getElementById("challenge-btn");
+
+  practiceBtn.addEventListener("mouseover", () => {
+    showModal("Practice Mode", "Practice your moves and upload later!", "practice");
+  });
+
+  challengeBtn.addEventListener("mouseover", () => {
+    showModal("Challenge Mode", "Go head-to-head with your friends!", "challenge");
+  });
+
+  practiceBtn.addEventListener("mouseout", scheduleHideModal);
+  challengeBtn.addEventListener("mouseout", scheduleHideModal);
+
+  // Prevent flicker: keep modal open if user moves over it
+  modalWrapper.addEventListener("mouseover", () => clearTimeout(hideTimer));
+  modalWrapper.addEventListener("mouseout", scheduleHideModal);
+</script>
+
+<script>
+  const uploadBtn = document.querySelector('.btn');
+  const fileInput = document.getElementById('video-upload');
+  const progressContainer = document.getElementById('progress-container');
+  const progressFill = document.getElementById('progress-fill');
+  const fileNameText = document.getElementById('file-name');
+
+  // Click the file input when user clicks the visible upload button
+  uploadBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    fileNameText.textContent = `Uploading: ${file.name}`;
+    progressContainer.style.display = 'flex';
+    progressFill.style.width = '0%';
+
+    // Simulated upload progress
+    let progress = 0;
+    const fakeUpload = setInterval(() => {
+      progress += Math.random() * 10; // Simulate random progress
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(fakeUpload);
+        fileNameText.textContent = `Uploaded: ${file.name}`;
+        fileNameText.style.color = "green";
+      }
+      progressFill.style.width = `${progress}%`;
+    }, 200);
+  });
+</script>
+
+</body>
 </html>
