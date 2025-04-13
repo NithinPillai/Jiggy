@@ -174,7 +174,7 @@
       if (!videoUrl) {
         alert("Please upload a video before continuing");
       } else {
-        window.location.href = 'https://d8b9-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/host.html';
+        window.location.href = 'https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/host.html';
       }
     });
   </script>
@@ -196,34 +196,48 @@
     fileInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      
+
+      // Show uploading status
       fileNameText.textContent = `Uploading: ${file.name}`;
       progressContainer.style.display = 'flex';
       progressFill.style.width = '0%';
 
-      // Convert file to a Data URL using FileReader
+      // Create a new FileReader instance
       const reader = new FileReader();
+
+      // When FileReader finishes reading the file
       reader.onload = function(e) {
         const dataURL = e.target.result;
-        // Save the data URL in sessionStorage so it can be used in host.html
+        console.log("File read successfully: ", dataURL);
+
         sessionStorage.setItem("uploadedVideoUrl", dataURL);
+        // Update the progress bar to 100% and change the status to "Uploaded"
+        progressFill.style.width = '100%';
+        fileNameText.textContent = `Uploaded: ${file.name}`;
+        fileNameText.style.color = "green";
       };
+
+      // You can optionally handle errors
+      reader.onerror = function(e) {
+        fileNameText.textContent = "Error uploading file";
+      };
+
+      // Start reading the file as a Data URL
       reader.readAsDataURL(file);
-      
-      // Simulated upload progress (optional UI feedback)
+
+      // Optional: Use a fake progress simulation that stops at 90% so that
+      // the real FileReader onload can update the final progress.
       let progress = 0;
       const fakeUpload = setInterval(() => {
-        progress += Math.random() * 10;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(fakeUpload);
-          fileNameText.textContent = `Uploaded: ${file.name}`;
-          fileNameText.style.color = "green";
+        if (progress < 90) {
+          progress += Math.random() * 10;
+          if (progress > 90) progress = 90;
+          progressFill.style.width = `${progress}%`;
         }
-        progressFill.style.width = `${progress}%`;
       }, 200);
     });
   </script>
+/
 </body>
 </html>
 

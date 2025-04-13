@@ -3,46 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="host.css"/>
-  <title>Jiggy Dance Challenge - Host</title>
+  <link rel="stylesheet" href="client.css"/>
+  <title>Jiggy Dance Challenge - Client</title>
 </head>
 <body>
-
   <!-- Header -->
   <header>
-    <a href="homePage.html" class="logo"><img src="logo.svg" alt="Jiggy Logo"/></a>
-      
+    <a href="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/homePage.html" class="logo">
+      <img src="logo.svg" alt="Jiggy Logo"/>
     </a>
     <nav>
       <!-- nav links here -->
     </nav>
   </header>
-
+  
   <!-- Main Content -->
   <div class="container">
-    <h1 id="header">Challenge <span>Video Feed</span></h1>
+    <h1 id="header">Join the Challenge</h1>
     
     <div class="video-container">
+      <!-- Display the client's own camera feed -->
       <div class="video-wrapper" id="yourCamera">
         <p class="video-label">Your Camera</p>
         <video id="localVideo" autoplay playsinline muted></video>
       </div>
 
+      <!-- Display the source video uploaded by the host -->
       <div class="video-wrapper" id="sourceVid">
-        <p class="video-label">Source</p>
+        <p class="video-label">Source Video</p>
         <video id="sourceVideo" autoplay playsinline controls>
-          <source id="videoSource" src="" type="video/mp4">
+          <source id="videoSource" src="" >
           Your browser does not support the video tag.
         </video>
-    </div>
+      </div>
       
+      <!-- Display the friend's (host's) camera feed -->
       <div class="video-wrapper" id="friendCamera">
-        <p class="video-label">Friend's Camera</p>
+        <p class="video-label">Host's Camera</p>
         <video id="remoteVideo" autoplay playsinline></video>
       </div>
     </div>
-   
   </div>
+  
+  <!-- Load uploaded video from localStorage/sessionStorage -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // Retrieve the uploaded video data URL from sessionStorage
@@ -50,62 +53,62 @@
       const videoSource = document.getElementById("videoSource");
       const videoElement = document.getElementById("sourceVideo");
       if (videoUrl) {
-        // Set the uploaded video as the source and load it
         videoSource.src = videoUrl;
         videoElement.load();
       } else {
-        // Hide the Source video container if no video was uploaded
+        // Hide the source container if no video was uploaded
         document.getElementById("sourceVid").style.display = "none";
       }
     });
   </script>
-
-  <script src="https://d8b9-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
+  
+  <!-- Socket.IO and WebRTC code for client (adjust role to 'client') -->
+  <script src="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io("https://d8b9-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app");
+    const socket = io("https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app");
     // Identify as client
     socket.emit('role', 'client');
 
-    // Grab the video elements
+    // Grab video elements
     const localVideo = document.getElementById('localVideo');
     const remoteVideo = document.getElementById('remoteVideo');
 
     async function startVideo() {
       try {
-        // Prompt for camera access and get the stream
+        // Prompt for camera access
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         localVideo.srcObject = stream;
         
-        // Set up RTCPeerConnection on the client side.
+        // Set up RTCPeerConnection for client
         const peerConnection = new RTCPeerConnection({
           iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
         });
         
-        // Add the video tracks to the connection.
+        // Add client's video tracks to connection
         stream.getTracks().forEach(track => {
           peerConnection.addTrack(track, stream);
         });
     
-        // Handle incoming remote stream
+        // Handle incoming remote tracks (e.g., host's camera)
         peerConnection.ontrack = event => {
           if (event.streams && event.streams[0]) {
             remoteVideo.srcObject = event.streams[0];
           }
         };
-        
-        // When ICE candidates are generated, send them to the host.
+    
+        // Send ICE candidates to host
         peerConnection.onicecandidate = event => {
           if (event.candidate) {
             socket.emit('candidate', event.candidate);
           }
         };
-
-        // Create an offer, set it as local description, and send it.
+    
+        // Create offer and send it to the host
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         socket.emit('offer', offer);
-
-        // When the client receives the answer from the host, set it.
+    
+        // When the client receives the answer from host, set it.
         socket.on('answer', async answer => {
           await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
         });
@@ -114,7 +117,7 @@
         socket.on('candidate', candidate => {
           peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
         });
-
+    
       } catch (error) {
         console.error('Error accessing camera:', error);
       }
@@ -124,3 +127,4 @@
   </script>
 </body>
 </html>
+

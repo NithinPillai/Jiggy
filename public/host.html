@@ -9,7 +9,9 @@
 <body>
   <!-- Header -->
   <header>
-    <a href="homePage.html" class="logo"><img src="logo.svg" alt="Jiggy Logo"/></a>
+    <a href="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/homePage.html" class="logo">
+      <img src="logo.svg" alt="Jiggy Logo"/>
+    </a>
     <nav>
       <!-- nav links here -->
     </nav>
@@ -25,9 +27,11 @@
         <video id="localVideo" autoplay playsinline muted></video>
       </div>
 
+      <!-- Source video: Loaded from sessionStorage -->
       <div class="video-wrapper" id="sourceVid">
         <p class="video-label">Source</p>
-        <video id="sourceVideo" autoplay playsinline controls>
+        <!-- Remove autoplay attribute here so we can control it -->
+        <video id="sourceVideo" playsinline controls>
           <source id="videoSource" src="" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -41,18 +45,17 @@
     
     <div id="invite">
       <p>Invite link: <span id="inviteLink"></span></p>
-      <img src = "copy.png" id="copyButton" class = "copy-icon" alt = "Copy Icon" />
+      <img src="copy.png" id="copyButton" class="copy-icon" alt="Copy Icon"/>
     </div>
   </div>
 
+  <!-- Load uploaded video from sessionStorage -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Retrieve the uploaded video data URL from sessionStorage
       const videoUrl = sessionStorage.getItem("uploadedVideoUrl");
       const videoSource = document.getElementById("videoSource");
       const videoElement = document.getElementById("sourceVideo");
       if (videoUrl) {
-        // Set the uploaded video as the source and load it
         videoSource.src = videoUrl;
         videoElement.load();
       } else {
@@ -61,32 +64,29 @@
     });
   </script>
 
-  <script src="https://d8b9-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
+  <!-- Socket.IO and WebRTC Scripts -->
+  <script src="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://d8b9-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app');
-
-    // Identify as host
+    const socket = io('https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app');
     socket.emit('role', 'host');
 
-    // Create a new RTCPeerConnection using Google’s public STUN server.
     const peerConnection = new RTCPeerConnection({
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
     });
     
-    // When a remote track is received, show it in the video element.
+    // When a remote track is received, display it.
     peerConnection.ontrack = event => {
       document.getElementById('remoteVideo').srcObject = event.streams[0];
     };
 
-    // Send any ICE candidates to the client.
+    // ICE candidate handling.
     peerConnection.onicecandidate = event => {
       if (event.candidate) {
         socket.emit('candidate', event.candidate);
       }
     };
 
-    // When we receive an offer from the client, set it as the remote description,
-    // then create and send an answer.
+    // Handle offer from the client.
     socket.on('offer', async offer => {
       console.log('Received offer:', offer);
       await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
@@ -95,30 +95,33 @@
       socket.emit('answer', answer);
     });
 
-    // When we receive ICE candidates from the client, add them.
+    // Handle incoming ICE candidates.
     socket.on('candidate', candidate => {
       peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     });
 
-    // Generate the invite link to send to your friend.
+    // Listen for "clientJoined" event to trigger autoplay of the source video.
+    socket.on('clientJoined', () => {
+      console.log("Client has joined; attempting to autoplay source video.");
+      const videoElement = document.getElementById("sourceVideo");
+      // Call play() to start playback.
+      videoElement.play().catch(error => {
+        console.error("Autoplay failed:", error);
+      });
+    });
+
+    // Generate the invite link (replace "host.html" with "client.html").
     const inviteLinkElem = document.getElementById('inviteLink');
-    // This builds a URL assuming client.html is served from the same host and port.
     const currentUrl = window.location.href;
-    // Replace "host.html" with "client.html"
     const inviteLink = currentUrl.replace("host.html", "client.html");
     inviteLinkElem.textContent = inviteLink;
 
-    // Grab the video elements
+    // Start local video for host.
     const localVideo = document.getElementById('localVideo');
-    const remoteVideo = document.getElementById('remoteVideo');
-  
     async function startLocalVideo() {
       try {
-        // Prompt for camera access and get the stream
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         localVideo.srcObject = stream;
-        
-        // Add the video tracks to the connection.
         stream.getTracks().forEach(track => {
           peerConnection.addTrack(track, stream);
         });
@@ -126,17 +129,21 @@
         console.error('Error accessing camera:', error);
       }
     }
-  
     startLocalVideo();
-  
+
+    // Copy invite link functionality.
     const copyButton = document.getElementById('copyButton');
-    copyButton.addEventListener('click', () => {
-      navigator.clipboard.writeText(inviteLink).then(() => {
-        alert('Link copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
+    if (copyButton) {
+      copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(inviteLink).then(() => {
+          console.log('Invite link copied!');
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+        });
       });
-    });
+    }
   </script>
 </body>
 </html>
+
+
