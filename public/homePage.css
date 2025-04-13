@@ -1,0 +1,337 @@
+
+/* GLOBAL STYLES */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: whitesmoke;
+    color: black;
+}
+
+/* HEADER */ 
+
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem 4rem;
+    position: fixed;
+    top: 4rem;
+    left: 6rem;
+    width: 100%;
+    z-index: 100;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .logo img {
+    width: 40rem;
+    height: auto;
+    margin-top: -6rem;
+    margin-left: -10rem;
+    margin-right: auto;
+  }
+
+/* HOME SECTION */
+section {
+  min-height: 100vh;
+  padding: 5rem 9% 5rem;
+}
+
+.home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: whitesmoke;
+  padding-top: 10rem;
+  text-align: center;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-content h1 {
+  font-size: 6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+span {
+  color: #927FEE;
+}
+
+/* TYPING TEXT + SUBHEADINGS */
+
+.typing-text {
+  font-size: 5rem;
+  font-weight: 700;
+  min-height: 6rem;
+  margin-bottom: 1rem;
+}
+
+.subheading {
+  font-size: 2.25rem;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 3rem;
+}
+
+.cursor {
+  display: inline-block;
+  color: #927FEE;
+  animation: blink 0.7s infinite;
+  font-weight: 700;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ACTION BUTTONS */
+
+.action-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.btn-icons {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  margin-bottom: 3rem;
+}
+
+.btn-icons a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 25rem;
+  height: 25rem;
+  background-color: transparent;
+  border: 0.025rem solid #927FEE;
+  border-radius: 50%;
+  transition: 0.3s ease;
+  color: #927FEE;
+}
+
+.btn-icons a.active-hover {
+  color: whitesmoke;
+  transform: scale(1.3) translateY(-5px);
+  background-color: #927FEE;
+  box-shadow: 0 0 25px #927FEE;
+}
+
+.btn-icons a:hover {
+  color: whitesmoke;
+  transform: scale(1.3) translateY(-5px);
+  background-color: #927FEE;
+  box-shadow: 0 0 25px #927FEE;
+}
+
+.btn-icons a img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  display: block;
+  vertical-align: middle;
+}
+
+.btn {
+  width: 40rem;
+  display: block;
+  padding: 1rem 2.8rem;
+  background-color: whitesmoke;
+  border-radius: 4rem;
+  font-size: 1.6rem;
+  color: #927FEE;
+  letter-spacing: 0.3rem;
+  font-weight: 600;
+  border: 2px solid #927FEE;
+  transition: 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn:hover {
+  transform: scale3d(1.03);
+  background-color: #927FEE;
+  color: whitesmoke;
+  box-shadow: 0 0 25px #927FEE;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 995px) {
+  .home-content h1 {
+      font-size: 5rem;
+  }
+
+  .typing-text {
+      font-size: 2.5rem;
+  }
+
+  .btn-icons {
+      flex-wrap: wrap;
+      gap: 3rem;
+  }
+
+  .btn {
+      width: 90%;
+  }
+}
+
+/* MODAL */
+
+#hover-modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* Don't block hover */
+  z-index: 9999;
+}
+
+/* Background Blur Layer */
+.hover-modal-blur {
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Centered Modal */
+.hover-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hover-modal-content {
+  background: white;
+  padding: 3rem 4rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Headline & description */
+.hover-modal-content h2 {
+  font-size: 2.6rem;
+  color: #927FEE;
+  margin-bottom: 1rem;
+}
+
+.hover-modal-content p {
+  font-size: 1.6rem;
+  color: #333;
+}
+
+/* === Show Class === */
+#hover-modal-wrapper.show .hover-modal,
+#hover-modal-wrapper.show .hover-modal-blur {
+  opacity: 1;
+}
+
+/* UPLOAD BUTTON */
+
+/* === Upload Progress === */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.progress-bar {
+  width: 40rem;
+  height: 1.5rem;
+  background-color: #ccc;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #927FEE;
+  transition: width 0.3s ease;
+}
+
+.file-name {
+  font-size: 1.4rem;
+  color: #555;
+}
+
+/* MODAL BUTTONS */
+
+.modal-buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#hover-modal-wrapper {
+  pointer-events: none; /* ✅ this makes the whole wrapper ignore mouse */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+}
+
+.hover-modal {
+  pointer-events: none; /* ✅ the container ignores hover */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hover-modal-content {
+  pointer-events: all; /* ✅ but THIS part (the box) IS hoverable/clickable */
+}
