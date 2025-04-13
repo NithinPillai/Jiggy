@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Jiggy</title>
     <link rel="stylesheet" href="homeScreen.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -14,110 +15,47 @@
         <div class="card">
             <h1>Jiggy</h1>
 
-            <!-- Row for the icons -->
+            <!-- Icon row -->
             <div class="icons-row">
-                <div class="icon-box">
-                    <img src="pencil.png" alt="Pencil Icon" class="icon">
-                </div>
-                <div class="icon-box">
+                <button id="practice-btn" class="button" aria-label="Practice Mode">
+                    <img src="pencil.png" alt="button" class="icon">
+                </button>
+                <button id="challenge-btn" class="button" aria-label="Challenge Mode">
                     <img src="sword.png" alt="Sword Icon" class="icon">
-                </div>
+                </button>
             </div>
 
-
-            <!-- Upload Video Button -->
+            <!-- Upload Button -->
             <button id="upload-btn" class="upload-btn">Upload Video</button>
-
-            <!-- Hidden file input -->
             <input type="file" id="file-input" accept="video/*" style="display: none;" />
 
-            <!-- Loading area (initially hidden) -->
+            <!-- Progress Bar -->
             <div class="loading-row" style="display: none;">
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 0%;"></div>
                 </div>
-                <!-- File name goes here -->
                 <p id="file-name"></p>
             </div>
 
-
-
-
-
-
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const uploadBtn = document.getElementById('upload-btn');
-            const fileInput = document.getElementById('file-input');
-            const progressFill = document.querySelector('.progress-fill');
-            const loadingRow = document.querySelector('.loading-row');
-            const fileNameDisplay = document.getElementById('file-name');
 
-            // When the "Upload Video" button is clicked, trigger the file input.
-            uploadBtn.addEventListener('click', function () {
-                fileInput.click();
-            });
+    <!-- Modal -->
+    <div id="modal-container" style="display: none;">
+        <div class="modal-background">
+            <div class="modal">
+                <h2 id="modal-title">Default Title</h2>
+                <p id="modal-description">Default description</p>
+                <svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
+                    preserveAspectRatio="none">
+                    <rect x="0" y="0" fill="none" rx="12" ry="12" />
+                </svg>
+            </div>
+        </div>
+    </div>
 
-            // When the file is selected, show the loading bar, output the file name, and begin the upload.
-            fileInput.addEventListener('change', function (event) {
-                const file = event.target.files[0];
-                if (file) {
-                    // Show the loading row when a file is selected.
-                    loadingRow.style.display = "flex";
-
-                    // Reset the progress bar to 0%
-                    progressFill.style.width = "0%";
-
-                    // Output the selected file's name.
-                    fileNameDisplay.innerText = file.name;
-
-                    // Begin uploading the file.
-                    uploadVideo(file);
-                }
-            });
-
-            // Function to upload the file using XMLHttpRequest.
-            function uploadVideo(file) {
-                const formData = new FormData();
-                formData.append('video', file);  // 'video' is the key your server expects.
-
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'upload_endpoint_here', true); // Replace with your actual upload URL.
-
-                // Update the progress bar as the file uploads.
-                xhr.upload.onprogress = function (e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = (e.loaded / e.total) * 100;
-                        progressFill.style.width = percentComplete + '%';
-                    }
-                };
-
-                // When the upload completes successfully.
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        progressFill.style.width = "100%";
-                        console.log('Upload successful!');
-                    } else {
-                        console.error('Upload failed.');
-                    }
-                };
-
-                xhr.onerror = function () {
-                    console.error('Error during the upload.');
-                };
-
-                xhr.send(formData);
-            }
-        });
-    </script>
-
-
-
-
-
-
+    <!-- Custom JS File -->
+    <script src="homeScreen.js"></script>
 </body>
 
 </html>
