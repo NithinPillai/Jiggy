@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    // Upload handling
+    // Upload handling (your existing code) remains unchanged
     $('#upload-btn').click(() => $('#file-input').click());
 
     $('#file-input').on('change', function (event) {
@@ -11,23 +11,6 @@ $(document).ready(function () {
             uploadVideo(file);
         }
     });
-
-    function resizeSketchRect() {
-        const modal = document.querySelector('.modal');
-        const rect = document.querySelector('.modal-svg rect');
-
-        const modalWidth = modal.offsetWidth;
-        const modalHeight = modal.offsetHeight;
-
-        // Set rect size to match modal
-        rect.setAttribute('width', modalWidth);
-        rect.setAttribute('height', modalHeight);
-
-        // Update the stroke-dash values based on perimeter
-        const perimeter = 2 * (modalWidth + modalHeight);
-        rect.style.strokeDasharray = perimeter;
-        rect.style.strokeDashoffset = perimeter;
-    }
 
     function uploadVideo(file) {
         const formData = new FormData();
@@ -52,7 +35,7 @@ $(document).ready(function () {
         xhr.send(formData);
     }
 
-    // Modal logic
+    // Modal content for each icon button
     const modalContent = {
         'practice-btn': {
             title: "Practice Mode",
@@ -64,24 +47,80 @@ $(document).ready(function () {
         }
     };
 
-    $('.button').click(function () {
-        const buttonId = $(this).attr('id');
+    let showModalTimeout;
+    let hideModalTimeout;
+
+    // Function to show the modal.
+    function showModal(buttonId) {
+        clearTimeout(hideModalTimeout);
         $('#modal-title').text(modalContent[buttonId].title);
         $('#modal-description').text(modalContent[buttonId].description);
         $('#modal-container')
             .removeClass('out')
             .removeAttr('class')
-            .addClass('animation')
+            .addClass('animation show') // Add 'show' class for fade-in
             .show();
-        resizeSketchRect();
         $('body').addClass('modal-active');
+    }
+
+    // Function to hide the modal.
+    function hideModal() {
+        clearTimeout(showModalTimeout);
+        $('#modal-container')
+            .removeClass('animation show') // Remove 'show' class for fade-out
+            .addClass('out')
+            .hide(); // Ensure the modal is hidden
+        $('body').removeClass('modal-active');
+    }
+
+    // When hovering over the icon buttons, set a timeout to show the modal.
+    $('.button').on('mouseenter', function () {
+        const buttonId = $(this).attr('id');
+        clearTimeout(hideModalTimeout); // Clear any hide timeout
+        showModalTimeout = setTimeout(() => showModal(buttonId), 700); // 0.7-second delay
     });
 
-    $('#modal-container').click(function (e) {
-        if ($(e.target).closest('.modal').length === 0) {
-            $(this).removeClass('animation').addClass('out');
-            $('body').removeClass('modal-active');
-            setTimeout(() => $(this).hide(), 500);
+    // Clear the show timeout if the mouse leaves the button before the modal is shown.
+    $('.button').on('mouseleave', function () {
+        clearTimeout(showModalTimeout);
+    });
+
+    // Clear the hide timeout when the mouse enters the modal container.
+    $('#modal-container').on('mouseenter', function () {
+        clearTimeout(hideModalTimeout);
+    });
+
+    // Set a timeout to hide the modal when the mouse leaves the modal container.
+    $('#modal-container').on('mouseleave', function () {
+        hideModalTimeout = setTimeout(hideModal, 2000); // 2-second delay
+    });
+
+    // Hide the modal when hovering over the card.
+    $('.card').on('mouseenter', function () {
+        hideModalTimeout = setTimeout(hideModal, 1000); // 1-second delay
+    });
+
+    // Clear the hide timeout if the mouse leaves the card before the modal is hidden.
+    $('.card').on('mouseleave', function () {
+        clearTimeout(hideModalTimeout);
+    });
+
+    // Hide the modal when hovering over any other part of the screen.
+    $(document).on('mouseenter', function (e) {
+        if (!$(e.target).closest('#modal-container').length) {
+            hideModalTimeout = setTimeout(hideModal, 2000); // 2-second delay
         }
     });
+
+    // Set a timeout to hide the modal when the mouse leaves the button.
+    $('.button').on('mouseleave', function () {
+        clearTimeout(showModalTimeout);
+        hideModalTimeout = setTimeout(hideModal, 2000); // 2-second delay
+    });
+
+    // Remove the mouseleave event from the button since we're focusing on the modal
+    // $('.button').on('mouseleave', function () { ... });
+
+    // Remove the document-level mousemove listener since we're using hover
+    // $(document).on('mousemove', function (e) { ... });
 });
