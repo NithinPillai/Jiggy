@@ -41,6 +41,7 @@
     
     <div id="invite">
       <p>Invite link: <span id="inviteLink"></span></p>
+      <img src = "copy.png" id="copyButton" class = "copy-icon" alt = "Copy Icon" />
     </div>
   </div>
 
@@ -128,7 +129,14 @@
   
     startLocalVideo();
   
-   
+    const copyButton = document.getElementById('copyButton');
+    copyButton.addEventListener('click', () => {
+      navigator.clipboard.writeText(inviteLink).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    });
   </script>
 </body>
 </html>
