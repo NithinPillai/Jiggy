@@ -2,7 +2,14 @@
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+
+// Enable CORS for Socket.IO
+const io = require('socket.io')(http, {
+  cors: {
+    origin: "*", // In development, "*" allows all origins; in production, specify the allowed origin(s)
+    methods: ["GET", "POST"]
+  }
+});
 
 // Serve static files from the 'public' folder.
 app.use(express.static('public'));
