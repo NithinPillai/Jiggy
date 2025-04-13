@@ -11,15 +11,17 @@
 <body>
   <h1>Client - Your Video Feed</h1>
   <video id="localVideo" autoplay playsinline muted></video>
+  <video id="remoteVideo" autoplay playsinline></video>
   
-  <script src="https://e7d7-2605-ad80-20-61fd-d95d-e482-36b0-d1c6.ngrok-free.app/socket.io/socket.io.js"></script>
+  <script src="https://0219-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io("https://e7d7-2605-ad80-20-61fd-d95d-e482-36b0-d1c6.ngrok-free.app");
+    const socket = io("https://0219-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app");
     // Identify as client
     socket.emit('role', 'client');
 
-    // Grab the video element
+    // Grab the video elements
     const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
 
     async function startVideo() {
       try {
@@ -36,6 +38,13 @@
         stream.getTracks().forEach(track => {
           peerConnection.addTrack(track, stream);
         });
+    
+        // Handle incoming remote stream
+        peerConnection.ontrack = event => {
+          if (event.streams && event.streams[0]) {
+            remoteVideo.srcObject = event.streams[0];
+          }
+        };
         
         // When ICE candidates are generated, send them to the host.
         peerConnection.onicecandidate = event => {
@@ -63,7 +72,7 @@
         console.error('Error accessing camera:', error);
       }
     }
-    
+
     startVideo();
   </script>
 </body>

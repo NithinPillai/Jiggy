@@ -11,15 +11,16 @@
 </head>
 <body>
   <h1>Host - Incoming Video Feed</h1>
+  <video id="localVideo" autoplay playsinline muted></video>
   <video id="remoteVideo" autoplay playsinline></video>
   <div id="invite">
     <p>Send this link to your friend:</p>
     <p id="inviteLink"></p>
   </div>
 
-  <script src="https://e7d7-2605-ad80-20-61fd-d95d-e482-36b0-d1c6.ngrok-free.app/socket.io/socket.io.js"></script>
+  <script src="https://0219-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://e7d7-2605-ad80-20-61fd-d95d-e482-36b0-d1c6.ngrok-free.app');
+    const socket = io('https://0219-2605-ad80-20-60d5-e5c3-b2e8-a346-851.ngrok-free.app');
 
     // Identify as host
     socket.emit('role', 'host');
@@ -63,6 +64,27 @@
     // Replace "host.html" with "client.html"
     const inviteLink = currentUrl.replace("host.html", "client.html");
     inviteLinkElem.textContent = inviteLink;
+
+    // Grab the video elements
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+  
+    async function startLocalVideo() {
+      try {
+        // Prompt for camera access and get the stream
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        localVideo.srcObject = stream;
+        
+        // Add the video tracks to the connection.
+        stream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, stream);
+        });
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+      }
+    }
+  
+    startLocalVideo();
   </script>
 </body>
 </html>
