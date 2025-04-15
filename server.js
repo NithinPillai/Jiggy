@@ -2,7 +2,10 @@
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  // Increase max HTTP buffer size to handle video streaming
+  maxHttpBufferSize: 1e8 // 100 MB
+});
 
 // Serve static files from the 'public' folder.
 app.use(express.static('public'));
@@ -21,6 +24,20 @@ io.on('connection', socket => {
       hostSocket = socket;
     } else if (role === 'client') {
       clientSocket = socket;
+      // If host is already connected, notify them that a client has joined
+      if (hostSocket) {
+        console.log('Notifying host that client has joined');
+        hostSocket.emit('clientJoined');
+      }
+    }
+  });
+  
+  // Client explicitly notifies when they've joined and are ready
+  socket.on('clientJoined', () => {
+    console.log('Client joined event received from client');
+    if (hostSocket && socket.id === clientSocket?.id) {
+      console.log('Forwarding clientJoined event to host');
+      hostSocket.emit('clientJoined');
     }
   });
 

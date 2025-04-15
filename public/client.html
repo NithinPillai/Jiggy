@@ -9,7 +9,7 @@
 <body>
   <!-- Header -->
   <header>
-    <a href="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/homePage.html" class="logo">
+    <a href="https://3f40-129-2-89-123.ngrok-free.app/homePage.html" class="logo">
       <img src="logo.svg" alt="Jiggy Logo"/>
     </a>
     <nav>
@@ -22,22 +22,23 @@
     <h1 id="header">Join the Challenge</h1>
     
     <div class="video-container">
-      <!-- Display the client's own camera feed -->
+      <!-- Client's own camera feed -->
       <div class="video-wrapper" id="yourCamera">
         <p class="video-label">Your Camera</p>
         <video id="localVideo" autoplay playsinline muted></video>
       </div>
 
-      <!-- Display the source video uploaded by the host -->
+      <!-- Source video: uploaded by host -->
       <div class="video-wrapper" id="sourceVid">
         <p class="video-label">Source Video</p>
-        <video id="sourceVideo" autoplay playsinline controls>
-          <source id="videoSource" src="" >
+        <video id="sourceVideo" autoplay playsinline controls muted>
+          <!-- Optionally, remove type or set to proper MIME if needed -->
+          <source id="videoSource" src="">
           Your browser does not support the video tag.
         </video>
       </div>
       
-      <!-- Display the friend's (host's) camera feed -->
+      <!-- Host's camera feed -->
       <div class="video-wrapper" id="friendCamera">
         <p class="video-label">Host's Camera</p>
         <video id="remoteVideo" autoplay playsinline></video>
@@ -45,85 +46,163 @@
     </div>
   </div>
   
-  <!-- Load uploaded video from localStorage/sessionStorage -->
+  <!-- Load video from sessionStorage or wait for stream from host -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Retrieve the uploaded video data URL from sessionStorage
       const videoUrl = sessionStorage.getItem("uploadedVideoUrl");
-      const videoSource = document.getElementById("videoSource");
-      const videoElement = document.getElementById("sourceVideo");
       if (videoUrl) {
+        const videoSource = document.getElementById("videoSource");
         videoSource.src = videoUrl;
-        videoElement.load();
-      } else {
-        // Hide the source container if no video was uploaded
-        document.getElementById("sourceVid").style.display = "none";
+        const sourceVideo = document.getElementById("sourceVideo");
+        sourceVideo.load();
+        sourceVideo.play().catch(err => {
+          console.error("Error playing source video:", err);
+        });
       }
     });
   </script>
-  
-  <!-- Socket.IO and WebRTC code for client (adjust role to 'client') -->
-  <script src="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
+
+  <!-- Load Socket.IO -->
+  <script src="https://3f40-129-2-89-123.ngrok-free.app/socket.io/socket.io.js"></script>
+
+  <!-- Client Socket.IO and WebRTC code -->
   <script>
-    const socket = io("https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app");
+    // Initialize Socket.IO connection
+    const socket = io("https://3f40-129-2-89-123.ngrok-free.app");
+    
     // Identify as client
     socket.emit('role', 'client');
 
-    // Grab video elements
+    // Once the client page is loaded, notify the host that the client has joined.
+    // We do this inside a timeout to allow the video elements to load.
+    window.addEventListener("load", () => {
+      socket.emit("clientJoined");
+      console.log("clientJoined event emitted");
+    });
+
+    // Grab the client's video elements
     const localVideo = document.getElementById('localVideo');
     const remoteVideo = document.getElementById('remoteVideo');
 
-    async function startVideo() {
+    async function startLocalVideo() {
       try {
-        // Prompt for camera access
+        // Prompt for camera access (client's own camera)
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         localVideo.srcObject = stream;
         
-        // Set up RTCPeerConnection for client
+        // Set up the RTCPeerConnection for client.
         const peerConnection = new RTCPeerConnection({
           iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
         });
         
-        // Add client's video tracks to connection
+        // Add local tracks to the connection.
         stream.getTracks().forEach(track => {
           peerConnection.addTrack(track, stream);
         });
+        
+        // Reference to the source video element
+        const sourceVideo = document.getElementById('sourceVideo');
     
-        // Handle incoming remote tracks (e.g., host's camera)
+        // When remote stream arrives, handle different tracks
+        let receivedTracksCount = 0;
+        let hostCameraTrack = null;
+        let sourceVideoTrack = null;
+        
         peerConnection.ontrack = event => {
           if (event.streams && event.streams[0]) {
-            remoteVideo.srcObject = event.streams[0];
+            receivedTracksCount++;
+            console.log(`Received track ${receivedTracksCount}: ${event.track.kind}`);
+            
+            // Identify tracks by their kind (video/audio) and other properties
+            if (event.track.kind === 'video') {
+              // Store the track reference
+              if (!hostCameraTrack) {
+                hostCameraTrack = event.track;
+                // Set up remote video (host camera)
+                if (!remoteVideo.srcObject) {
+                  remoteVideo.srcObject = new MediaStream();
+                }
+                remoteVideo.srcObject.addTrack(hostCameraTrack);
+                console.log('Added host camera track to remote video element');
+              } 
+              else if (!sourceVideoTrack) {
+                sourceVideoTrack = event.track;
+                // Set up source video
+                if (!sourceVideo.srcObject) {
+                  sourceVideo.srcObject = new MediaStream();
+                }
+                sourceVideo.srcObject.addTrack(sourceVideoTrack);
+                console.log('Added source video track to source video element');
+                
+                // Attempt to play the source video
+                sourceVideo.play().catch(err => {
+                  console.error('Error playing source video:', err);
+                });
+              }
+              else {
+                console.log('Received additional video track, determining where to place it');
+                // If we already have both tracks, determine which one this is by comparing track settings
+                // For now, add it to source video as a fallback
+                if (!sourceVideo.srcObject) {
+                  sourceVideo.srcObject = new MediaStream();
+                }
+                sourceVideo.srcObject.addTrack(event.track);
+                console.log('Added additional video track to source video element');
+              }
+            }
+            // If we get audio tracks, add them to the appropriate stream
+            else if (event.track.kind === 'audio') {
+              console.log('Audio track received');
+              // Add audio track to remote video (host audio)
+              if (remoteVideo.srcObject) {
+                remoteVideo.srcObject.addTrack(event.track);
+              }
+            }
           }
         };
+        
+        // Listen for track ended events
+        peerConnection.addEventListener('removetrack', event => {
+          console.log('Track removed:', event.track.kind);
+        });
+        
+        // Listen for connection state changes
+        peerConnection.addEventListener('connectionstatechange', () => {
+          console.log('Connection state changed:', peerConnection.connectionState);
+        });
+        
+        // Listen for ICE connection state changes
+        peerConnection.addEventListener('iceconnectionstatechange', () => {
+          console.log('ICE connection state changed:', peerConnection.iceConnectionState);
+        });
     
-        // Send ICE candidates to host
+        // ICE candidate handling: send candidates to the host.
         peerConnection.onicecandidate = event => {
           if (event.candidate) {
             socket.emit('candidate', event.candidate);
           }
         };
-    
-        // Create offer and send it to the host
+
+        // Create an offer and send it to the host.
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         socket.emit('offer', offer);
     
-        // When the client receives the answer from host, set it.
+        // Listen for an answer from the host.
         socket.on('answer', async answer => {
           await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
         });
       
-        // When ICE candidates are received from the host, add them.
+        // Listen for ICE candidates from the host.
         socket.on('candidate', candidate => {
           peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
         });
-    
       } catch (error) {
         console.error('Error accessing camera:', error);
       }
     }
 
-    startVideo();
+    startLocalVideo();
   </script>
 </body>
 </html>

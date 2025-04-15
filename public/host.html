@@ -9,7 +9,7 @@
 <body>
   <!-- Header -->
   <header>
-    <a href="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/homePage.html" class="logo">
+    <a href="https://3f40-129-2-89-123.ngrok-free.app/homePage.html" class="logo">
       <img src="logo.svg" alt="Jiggy Logo"/>
     </a>
     <nav>
@@ -65,9 +65,9 @@
   </script>
 
   <!-- Socket.IO and WebRTC Scripts -->
-  <script src="https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app/socket.io/socket.io.js"></script>
+  <script src="https://3f40-129-2-89-123.ngrok-free.app/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://541a-2605-ad80-20-61fd-6d14-d909-46c1-f0d9.ngrok-free.app');
+    const socket = io('https://3f40-129-2-89-123.ngrok-free.app');
     socket.emit('role', 'host');
 
     const peerConnection = new RTCPeerConnection({
@@ -105,7 +105,10 @@
       console.log("Client has joined; attempting to autoplay source video.");
       const videoElement = document.getElementById("sourceVideo");
       // Call play() to start playback.
-      videoElement.play().catch(error => {
+      videoElement.play().then(() => {
+        console.log("Source video playback started successfully");
+        // We'll handle stream capture in the startLocalVideo function
+      }).catch(error => {
         console.error("Autoplay failed:", error);
       });
     });
@@ -116,19 +119,85 @@
     const inviteLink = currentUrl.replace("host.html", "client.html");
     inviteLinkElem.textContent = inviteLink;
 
-    // Start local video for host.
+    // Start local video for host and capture source video for streaming
     const localVideo = document.getElementById('localVideo');
+    const sourceVideo = document.getElementById('sourceVideo');
+    
     async function startLocalVideo() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        localVideo.srcObject = stream;
-        stream.getTracks().forEach(track => {
-          peerConnection.addTrack(track, stream);
+        // Get camera stream
+        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        localVideo.srcObject = cameraStream;
+        
+        // Add camera tracks to peer connection
+        cameraStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, cameraStream);
+        });
+        
+        // Capture the source video stream when it's playing
+        let sourceStream = null;
+        
+        // Define a function to capture and add the source video stream
+        const captureAndAddSourceStream = () => {
+          try {
+            console.log('Attempting to capture source video stream');
+            // Use the appropriate method based on browser support
+            if (sourceVideo.captureStream) {
+              sourceStream = sourceVideo.captureStream();
+            } else if (sourceVideo.mozCaptureStream) {
+              sourceStream = sourceVideo.mozCaptureStream();
+            } else if (sourceVideo.webkitCaptureStream) {
+              sourceStream = sourceVideo.webkitCaptureStream();
+            } else {
+              throw new Error('Video capture API not supported in this browser');
+            }
+            
+            // Verify we have tracks before adding them
+            if (sourceStream && sourceStream.getTracks().length > 0) {
+              console.log(`Captured ${sourceStream.getTracks().length} tracks from source video`);
+              sourceStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, sourceStream);
+                console.log(`Added ${track.kind} track from source video to peer connection`);
+              });
+            } else {
+              console.warn('Source stream capture returned no tracks');
+            }
+          } catch (err) {
+            console.error('Error capturing source video stream:', err);
+          }
+        };
+        
+        // Add event listener for when video starts playing
+        sourceVideo.addEventListener('playing', () => {
+          console.log('Source video is playing, capturing stream for WebRTC');
+          // Only capture if we haven't already or if the previous capture had no tracks
+          if (!sourceStream || sourceStream.getTracks().length === 0) {
+            captureAndAddSourceStream();
+          }
+        });
+        
+        // Handle client joined event
+        socket.on('clientJoined', () => {
+          console.log('Client joined, attempting to play source video');
+          // Try to play the video
+          sourceVideo.play()
+            .then(() => {
+              console.log('Source video playback started after client joined');
+              // If the video is already playing, the 'playing' event might not fire again
+              // so we need to capture the stream here too
+              if (!sourceStream || sourceStream.getTracks().length === 0) {
+                captureAndAddSourceStream();
+              }
+            })
+            .catch(err => {
+              console.error('Error playing source video after client joined:', err);
+            });
         });
       } catch (error) {
         console.error('Error accessing camera:', error);
       }
     }
+    
     startLocalVideo();
 
     // Copy invite link functionality.
